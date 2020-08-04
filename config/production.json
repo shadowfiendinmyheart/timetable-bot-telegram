@@ -1,0 +1,14 @@
+{
+
+    "Telegraf" : {
+        "token": "put your telegram token here"
+    },
+    
+    "DataBase" : {
+        "dbHost" : "put your database host name here",
+        "dbUser" : "put your database user name here",
+        "dbPassword" : "put your database password here",
+        "dbNameDataBase" : "put your database name here"
+    }
+    
+}
