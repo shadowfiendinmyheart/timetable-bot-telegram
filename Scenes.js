@@ -150,6 +150,7 @@ class SceneGenerator {
                     for (var i = 0; i < showMessage.length; i++) {
                     await ctx.reply("👀День недели: " + showMessage[i].day_name + 
                                 "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                                "\n🌐Чётность: " + showMessage[i].parity_name + 
                                 "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
                                 "\n🚪Кабинет: " + showMessage[i].classroom_name);
                     }
@@ -189,6 +190,7 @@ class SceneGenerator {
                     for (var i = 0; i < showMessage.length; i++) {
                     await ctx.reply("👀День недели: " + showMessage[i].day_name + 
                                 "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                                "\n🌐Чётность: " + showMessage[i].parity_name + 
                                 "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
                                 "\n🧑‍🏫Преподаватель: " + showMessage[i].teacher_name + 
                                 "\n🚶Группа: " + showMessage[i].team_name);

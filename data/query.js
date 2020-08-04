@@ -1,7 +1,7 @@
 class Query {
 
     getTeacherQuery() {
-        let query = "SELECT DISTINCT day.day_name, lesson.lesson_number, study_subject.study_subject_name, type_lesson.type_lesson_name, classroom.classroom_name FROM `timetable`, `day`, `lesson`, `study_subject`, `type_lesson`, `classroom`WHERE day.id = day_id AND lesson.id = lesson_id AND study_subject.id = study_subject_id AND type_lesson.id = type_lesson_id AND classroom.id = classroom_id AND teacher_id = (SELECT teacher.id FROM `teacher` WHERE teacher.teacher_name = ?)";
+        let query = "SELECT DISTINCT day.day_name, lesson.lesson_number, parity.parity_name, study_subject.study_subject_name, type_lesson.type_lesson_name, classroom.classroom_name FROM `timetable`, `day`, `parity`, `lesson`, `study_subject`, `type_lesson`, `classroom`WHERE day.id = day_id AND lesson.id = lesson_id AND study_subject.id = study_subject_id AND type_lesson.id = type_lesson_id AND classroom.id = classroom_id AND teacher_id = (SELECT teacher.id FROM `teacher` WHERE teacher.teacher_name = ?)";
         return query;
     }
 
@@ -16,7 +16,7 @@ class Query {
     }
 
     getClassroomTable() {
-        let query = 'SELECT DISTINCT day.day_name, lesson.lesson_number, study_subject.study_subject_name, type_lesson.type_lesson_name, teacher.teacher_name, team.team_name FROM `timetable`, `day`, `lesson`, `study_subject`, `type_lesson`, `teacher`, `team` WHERE day.id = day_id AND lesson.id = lesson_id AND study_subject.id = study_subject_id AND type_lesson.id = type_lesson_id AND teacher.id = teacher_id AND team.id = team_id AND classroom_id = (SELECT classroom.id FROM `classroom` WHERE classroom.classroom_name = ?)'
+        let query = 'SELECT DISTINCT day.day_name, lesson.lesson_number, parity.parity_name, study_subject.study_subject_name, type_lesson.type_lesson_name, teacher.teacher_name, team.team_name FROM `timetable`, `day`, `lesson`, `parity`, `study_subject`, `type_lesson`, `teacher`, `team` WHERE day.id = day_id AND lesson.id = lesson_id AND study_subject.id = study_subject_id AND type_lesson.id = type_lesson_id AND teacher.id = teacher_id AND team.id = team_id AND classroom_id = (SELECT classroom.id FROM `classroom` WHERE classroom.classroom_name = ?)'
         return query;
     }
 
