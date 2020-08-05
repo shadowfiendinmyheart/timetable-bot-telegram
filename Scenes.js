@@ -192,8 +192,7 @@ class SceneGenerator {
                                 "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
                                 "\n🌐Чётность: " + showMessage[i].parity_name + 
                                 "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
-                                "\n🧑‍🏫Преподаватель: " + showMessage[i].teacher_name + 
-                                "\n🚶Группа: " + showMessage[i].team_name);
+                                "\n🧑‍🏫Преподаватель: " + showMessage[i].teacher_name);
                     }
                     await ctx.reply(text.getQuitText())
                 } else {
