@@ -4,6 +4,7 @@ const dataBase = require('./data/DataBase')
 const queryClass = require('./data/query')
 const textClass = require('./data/text')
 const logic = require('./data/Logic')
+const c = require('config')
 const query = new queryClass();
 const text = new textClass();
 
@@ -15,7 +16,7 @@ async function getTimetableClassroom(campus, classroom, ctx) {
     } else {
         var classroomName = classroom;
     }
-    let showMessage = await dataBase.withTwoAurguments(campus, classroomName, query.getClassroomTimetable());
+    let showMessage = await dataBase.withOneAurguments(campus, query.concatClassroomQuery(campus, classroom));
     if (showMessage.length == 0) {
         await ctx.reply('Такого кабинета не существует');
     } else {
@@ -205,11 +206,12 @@ class SceneGenerator {
         })
         })
 
-        classroom.action('first', async (ctx) => { 
+        classroom.action('first', async (ctx) => {
             await ctx.reply('Введи номер кабинета:');
             classroom.on('text', async (ctx) => {
                 let answer = ctx.message.text;
-                await getTimetableClassroom('1', answer, ctx);
+                console.log("==================1=======================");
+                await getTimetableClassroom("1", answer, ctx);
                 await ctx.reply(text.getMenuText());
                 await ctx.scene.leave();
             })
@@ -219,7 +221,8 @@ class SceneGenerator {
             await ctx.reply('Введи номер кабинета:');
             classroom.on('text', async (ctx) => {
                 let answer = ctx.message.text;
-                await getTimetableClassroom('2', answer, ctx);
+                console.log("==================2=======================");
+                await getTimetableClassroom("2", answer, ctx);
                 await ctx.reply(text.getMenuText());
                 await ctx.scene.leave();
             })
@@ -229,7 +232,8 @@ class SceneGenerator {
             await ctx.reply('Введи номер кабинета:');
             classroom.on('text', async (ctx) => {
                 let answer = ctx.message.text;
-                await getTimetableClassroom('3', answer, ctx);
+                console.log("==================3=======================");
+                await getTimetableClassroom("3", answer, ctx);
                 await ctx.reply(text.getMenuText());
                 await ctx.scene.leave();
             })
@@ -239,7 +243,8 @@ class SceneGenerator {
             await ctx.reply('Введи номер кабинета:');
             classroom.on('text', async (ctx) => {
                 let answer = ctx.message.text;
-                await getTimetableClassroom('4', answer, ctx);
+                console.log("==================4=======================");
+                await getTimetableClassroom("4", answer, ctx);
                 await ctx.reply(text.getMenuText());
                 await ctx.scene.leave();
             })
@@ -249,7 +254,7 @@ class SceneGenerator {
             await ctx.reply('Введи номер кабинета:');
             classroom.on('text', async (ctx) => {
                 let answer = ctx.message.text;
-                await getTimetableClassroom('5', answer, ctx);
+                await getTimetableClassroom("5", answer, ctx);
                 await ctx.reply(text.getMenuText());
                 await ctx.scene.leave();
             })
@@ -259,7 +264,7 @@ class SceneGenerator {
             await ctx.reply('Введи номер кабинета:');
             classroom.on('text', async (ctx) => {
                 let answer = ctx.message.text;
-                await getTimetableClassroom('6', answer, ctx);
+                await getTimetableClassroom("6", answer, ctx);
                 await ctx.reply(text.getMenuText());
                 await ctx.scene.leave();
             })
@@ -269,14 +274,14 @@ class SceneGenerator {
             await ctx.reply('Введи номер кабинета:');
             classroom.on('text', async (ctx) => {
                 let answer = ctx.message.text;
-                await getTimetableClassroom('7', answer, ctx);
+                await getTimetableClassroom("7", answer, ctx);
                 await ctx.reply(text.getMenuText());
                 await ctx.scene.leave();
             })
         })
 
         classroom.action('ofp', async (ctx) => {
-            await getTimetableClassroom('Манеж', 'Манеж', ctx);
+            await getTimetableClassroom("0", 'Манеж', ctx);
             await ctx.reply(text.getMenuText());
             await ctx.scene.leave();
         })
