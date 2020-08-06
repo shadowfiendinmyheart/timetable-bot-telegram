@@ -9,8 +9,20 @@ const text = new textClass();
 
 var subscribeFlag = false;
 
+async function getTimetableClassroom(campus, classroom, ctx) {
+    let showMessage = await dataBase.withTwoAurguments(campus, classroom, query.getClassroomTimetable());
+    await ctx.reply('Расписание  ' + showMessage[0].classroom + "кабинета " + ":")
+    for (var i = 0; i < showMessage.length; i++) {
+        await ctx.reply("👀День недели: " + showMessage[i].day_name + 
+                    "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                    "\n🌐Чётность: " + showMessage[i].parity_name + 
+                    "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
+                    "\n🧑‍🏫Преподаватель: " + showMessage[i].teacher_name);
+    }
+}
+
 async function getTimetableDay (group, day, ctx) {
-    var showMessage = await dataBase.withTwoAurguments(group, day, query.getDailyTimetable());
+    let showMessage = await dataBase.withTwoAurguments(group, day, query.getDailyTimetable());
     await ctx.reply('Расписание на ' + day + ":")
     for (i = 0; i < showMessage.length; i++) {
         await ctx.reply("\n#️⃣ " + showMessage[i].lesson_number + " пара" +
@@ -165,40 +177,103 @@ class SceneGenerator {
 
     GenClassroomScene() {
         const classroom = new Scene('classroom');
+        
         classroom.enter(async (ctx) => {
-            await ctx.reply('Выбери кабинет')
-            var classrooms = await dataBase.withoutAurguments(query.getClassrooms())
-            var classroomsList = "";
-            for (var i = 0; i < classrooms.length; i++) {
-                classroomsList = classroomsList + i + " - " + classrooms[i].classroom_name + "\n";
+            await ctx.telegram.sendMessage(ctx.chat.id, 'Выбери корпус',
+            {
+                reply_markup: {
+                inline_keyboard: [
+                    [{text: "1к", callback_data: "first"}],
+                    [{text: "2к", callback_data: "secnond"}],
+                    [{text: "3к", callback_data: "third"}],
+                    [{text: "4к", callback_data: "fourth"}],
+                    [{text: "5к", callback_data: "fifth"}],
+                    [{text: "6к", callback_data: "sixth"}],
+                    [{text: "7к", callback_data: "seventh"}],
+                    [{text: "Манеж", callback_data: "ofp"}],
+                ]
             }
-            await ctx.reply(classroomsList)
+        })
         })
 
-        classroom.on('text', async (ctx) => {
-            const answer = ctx.message.text;
-            var chooseClassroom;
-            var classrooms = await dataBase.withoutAurguments(query.getClassrooms())
-            if (answer == '/leave') {
-                await ctx.reply(text.getMenuText())
-                await ctx.scene.leave()
-            } else {
-                if (answer <= classrooms.length && answer >= 0) {
-                    chooseClassroom = classrooms[answer].classroom_name;
-                    await ctx.reply('Расписание ' + chooseClassroom)
-                    var showMessage = await dataBase.withOneAurguments(chooseClassroom, query.getClassroomTable());
-                    for (var i = 0; i < showMessage.length; i++) {
-                    await ctx.reply("👀День недели: " + showMessage[i].day_name + 
-                                "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
-                                "\n🌐Чётность: " + showMessage[i].parity_name + 
-                                "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
-                                "\n🧑‍🏫Преподаватель: " + showMessage[i].teacher_name);
-                    }
-                    await ctx.reply(text.getQuitText())
-                } else {
-                    ctx.reply("Не понимаю тебя, если хочешь сбежать, просто напиши '/leave'")
-                }
-            }
+        classroom.action('first', async (ctx) => { 
+            await ctx.reply('Введи номер кабинета:');
+            classroom.on('text', async (ctx) => {
+                const answer = ctx.message.text;
+                await getTimetableClassroom('1', answer, ctx);
+                await ctx.reply(text.getMenuText());
+                await ctx.scene.leave();
+            })
+        })
+
+        classroom.action('secnond', async (ctx) => { 
+            await ctx.reply('Введи номер кабинета:');
+            classroom.on('text', async (ctx) => {
+                const answer = ctx.message.text;
+                await getTimetableClassroom('2', answer, ctx);
+                await ctx.reply(text.getMenuText());
+                await ctx.scene.leave();
+            })
+        })
+
+        classroom.action('third', async (ctx) => { 
+            await ctx.reply('Введи номер кабинета:');
+            classroom.on('text', async (ctx) => {
+                const answer = ctx.message.text;
+                await getTimetableClassroom('3', answer, ctx);
+                await ctx.reply(text.getMenuText());
+                await ctx.scene.leave();
+            })
+        })
+
+        classroom.action('fourth', async (ctx) => { 
+            await ctx.reply('Введи номер кабинета:');
+            classroom.on('text', async (ctx) => {
+                const answer = ctx.message.text;
+                await getTimetableClassroom('4', answer, ctx);
+                await ctx.reply(text.getMenuText());
+                await ctx.scene.leave();
+            })
+        })
+        
+        classroom.action('fifth', async (ctx) => { 
+            await ctx.reply('Введи номер кабинета:');
+            classroom.on('text', async (ctx) => {
+                const answer = ctx.message.text;
+                await getTimetableClassroom('5', answer, ctx);
+                await ctx.reply(text.getMenuText());
+                await ctx.scene.leave();
+            })
+        })
+        
+        classroom.action('sixth', async (ctx) => { 
+            await ctx.reply('Введи номер кабинета:');
+            classroom.on('text', async (ctx) => {
+                const answer = ctx.message.text;
+                await getTimetableClassroom('6', answer, ctx);
+                await ctx.reply(text.getMenuText());
+                await ctx.scene.leave();
+            })
+        })
+        
+        classroom.action('seventh', async (ctx) => { 
+            await ctx.reply('Введи номер кабинета:');
+            classroom.on('text', async (ctx) => {
+                const answer = ctx.message.text;
+                await getTimetableClassroom('7', answer, ctx);
+                await ctx.reply(text.getMenuText());
+                await ctx.scene.leave();
+            })
+        })
+
+        classroom.action('ofp', async (ctx) => { 
+            await ctx.reply('Введи номер кабинета:');
+            classroom.on('text', async (ctx) => {
+                const answer = ctx.message.text;
+                await getTimetableClassroom('Манеж', answer, ctx);
+                await ctx.reply(text.getMenuText());
+                await ctx.scene.leave();
+            })
         })
 
         return classroom
