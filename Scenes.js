@@ -195,110 +195,60 @@ class SceneGenerator {
         const classroom = new Scene('classroom');
         
         classroom.enter(async (ctx) => {
-            await ctx.telegram.sendMessage(ctx.chat.id, 'Выбери корпус',
+            await ctx.telegram.sendMessage(ctx.chat.id, 'Выбери день недели',
             {
                 reply_markup: {
                 inline_keyboard: [
-                    [{text: "1к", callback_data: "first"}],
-                    [{text: "2к", callback_data: "secnond"}],
-                    [{text: "3к", callback_data: "third"}],
-                    [{text: "4к", callback_data: "fourth"}],
-                    [{text: "5к", callback_data: "fifth"}],
-                    [{text: "6к", callback_data: "sixth"}],
-                    [{text: "7к", callback_data: "seventh"}],
-                    [{text: "Манеж", callback_data: "ofp"}],
-                    [{text: "Выйти в меню", callback_data: "leave"}],
+                    [{text: "Понедельник", callback_data: "monday"}],
+                    [{text: "Вторник", callback_data: "tuesday"}],
+                    [{text: "Среда", callback_data: "wednsday"}],
+                    [{text: "Четверг", callback_data: "thursday"}],
+                    [{text: "Пятница", callback_data: "friday"}],
+                    [{text: "Суббота", callback_data: "saturday"}],
                 ]
             }
         })
         })
 
-        classroom.action('first', async (ctx) => {
-            await ctx.reply('Введи номер кабинета:');
-            classroom.on('text', async (ctx) => {
-                let answer = ctx.message.text;
-                console.log("==================1=======================");
-                await getTimetableClassroom("1", answer, ctx);
-                await ctx.reply(text.getMenuText());
-                await ctx.scene.leave();
-            })
+        classroom.action('monday', async (ctx) => {
+            const answer = ctx.message.text;
+            await getTimetableClassroom('1', answer, ctx);
+            await ctx.reply(text.getTimetableMenuText())
         })
 
-        classroom.action('secnond', async (ctx) => { 
-            await ctx.reply('Введи номер кабинета:');
-            classroom.on('text', async (ctx) => {
-                let answer = ctx.message.text;
-                console.log("==================2=======================");
-                await getTimetableClassroom("2", answer, ctx);
-                await ctx.reply(text.getMenuText());
-                await ctx.scene.leave();
-            })
+        classroom.action('tuesday', async (ctx) => { 
+            await getTimetableDay(chooseGroup, "Вторник", ctx);
+            await ctx.reply(text.getTimetableMenuText())
         })
 
-        classroom.action('third', async (ctx) => { 
-            await ctx.reply('Введи номер кабинета:');
-            classroom.on('text', async (ctx) => {
-                let answer = ctx.message.text;
-                console.log("==================3=======================");
-                await getTimetableClassroom("3", answer, ctx);
-                await ctx.reply(text.getMenuText());
-                await ctx.scene.leave();
-            })
+        classroom.action('wednsday', async (ctx) => { 
+            await getTimetableDay(chooseGroup, "Среда", ctx);
+            await ctx.reply(text.getTimetableMenuText())
         })
 
-        classroom.action('fourth', async (ctx) => { 
-            await ctx.reply('Введи номер кабинета:');
-            classroom.on('text', async (ctx) => {
-                let answer = ctx.message.text;
-                console.log("==================4=======================");
-                await getTimetableClassroom("4", answer, ctx);
-                await ctx.reply(text.getMenuText());
-                await ctx.scene.leave();
-            })
+        classroom.action('thursday', async (ctx) => {
+            const answer = ctx.message.text;
+            await getTimetableClassroom('4', answer, ctx);
+            await ctx.reply(text.getTimetableMenuText())
+        })
+
+        classroom.action('friday', async (ctx) => { 
+            await  getTimetableDay(chooseGroup, "Пятница", ctx);
+            await ctx.reply(text.getTimetableMenuText())
+        })
+
+        classroom.action('saturday', async (ctx) => { 
+            await getTimetableDay(chooseGroup, "Суббота", ctx);
+            await ctx.reply(text.getTimetableMenuText())
+            await ctx.leave();
         })
         
-        classroom.action('fifth', async (ctx) => { 
-            await ctx.reply('Введи номер кабинета:');
-            classroom.on('text', async (ctx) => {
-                let answer = ctx.message.text;
-                await getTimetableClassroom("5", answer, ctx);
-                await ctx.reply(text.getMenuText());
-                await ctx.scene.leave();
-            })
-        })
-        
-        classroom.action('sixth', async (ctx) => { 
-            await ctx.reply('Введи номер кабинета:');
-            classroom.on('text', async (ctx) => {
-                let answer = ctx.message.text;
-                await getTimetableClassroom("6", answer, ctx);
-                await ctx.reply(text.getMenuText());
-                await ctx.scene.leave();
-            })
-        })
-        
-        classroom.action('seventh', async (ctx) => { 
-            await ctx.reply('Введи номер кабинета:');
-            classroom.on('text', async (ctx) => {
-                let answer = ctx.message.text;
-                await getTimetableClassroom("7", answer, ctx);
-                await ctx.reply(text.getMenuText());
-                await ctx.scene.leave();
-            })
+        classroom.on('text', async (ctx) => {
+            const answer = ctx.message.text;
+            ctx.reply('Не понимаю тебя, если хочешь сбежать, просто напиши /leave')
         })
 
-        classroom.action('ofp', async (ctx) => {
-            await getTimetableClassroom("0", 'Манеж', ctx);
-            await ctx.reply(text.getMenuText());
-            await ctx.scene.leave();
-        })
-
-        classroom.action('leave', async (ctx) => {
-            await ctx.reply(text.getMenuText());
-            await ctx.scene.leave();
-        })
-
-        return classroom
+        return classroom;
     }
 
     GenTimetableScene() {
