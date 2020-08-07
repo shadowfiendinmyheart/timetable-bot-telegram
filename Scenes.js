@@ -206,15 +206,12 @@ class SceneGenerator {
             {
                 reply_markup: {
                 inline_keyboard: [
-                    [{text: "1к", callback_data: "first"}],
-                    [{text: "2к", callback_data: "secnond"}],
-                    [{text: "3к", callback_data: "third"}],
-                    [{text: "4к", callback_data: "fourth"}],
-                    [{text: "5к", callback_data: "fifth"}],
-                    [{text: "6к", callback_data: "sixth"}],
-                    [{text: "7к", callback_data: "seventh"}],
-                    [{text: "Манеж", callback_data: "ofp"}],
-                    [{text: "Выйти в меню", callback_data: "leave"}],
+                    [{text: "Понедельник", callback_data: "monday"}],
+                    [{text: "Вторник", callback_data: "tuesday"}],
+                    [{text: "Среда", callback_data: "wednsday"}],
+                    [{text: "Четверг", callback_data: "thursday"}],
+                    [{text: "Пятница", callback_data: "friday"}],
+                    [{text: "Суббота", callback_data: "saturday"}],
                 ]
             }
         })
@@ -262,18 +259,23 @@ class SceneGenerator {
             await ctx.scene.leave();
         })
 
-        classroom.action('ofp', async (ctx) => {
-            await getTimetableClassroom("0", 'Манеж', ctx);
-            await ctx.reply(text.getMenuText());
-            await ctx.scene.leave();
+        classroom.action('friday', async (ctx) => { 
+            await  getTimetableDay(chooseGroup, "Пятница", ctx);
+            await ctx.reply(text.getTimetableMenuText())
         })
 
-        classroom.action('leave', async (ctx) => {
-            await ctx.reply(text.getMenuText());
-            await ctx.scene.leave();
+        classroom.action('saturday', async (ctx) => { 
+            await getTimetableDay(chooseGroup, "Суббота", ctx);
+            await ctx.reply(text.getTimetableMenuText())
+            await ctx.leave();
+        })
+        
+        classroom.on('text', async (ctx) => {
+            const answer = ctx.message.text;
+            ctx.reply('Не понимаю тебя, если хочешь сбежать, просто напиши /leave')
         })
 
-        return classroom
+        return classroom;
     }
 
     GenTimetableScene() {
