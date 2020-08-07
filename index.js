@@ -50,11 +50,20 @@ bot.command('group', async (ctx) => {
 })
 
 bot.command('subscribe', async (ctx) => {
-  ctx.scene.enter('subscribe')
+  if (await logic.checkGroup(ctx.message.from.username) == true) {
+    ctx.scene.enter('subscribe')
+  } else {
+    ctx.reply('Выбери свою группу:');
+    ctx.scene.enter('group')
+  }
 })
 
 bot.command('classroom', async (ctx) => {
   ctx.scene.enter('classroom')
+})
+
+bot.help(async (ctx) => {
+  ctx.reply('По всем вопросам - @shadowfiend15yo');
 })
 
 bot.launch()

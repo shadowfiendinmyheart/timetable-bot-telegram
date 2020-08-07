@@ -45,6 +45,12 @@ async function getTimetableDay (group, day, ctx) {
 
 class SceneGenerator {
 
+    GenCourseScene() {
+        const scene = new Scene('scene');
+        
+        return group;
+    }
+
     GenGroupScene() {
         const group = new Scene('group');
         group.enter(async (ctx) => {
@@ -201,6 +207,7 @@ class SceneGenerator {
                     [{text: "6к", callback_data: "sixth"}],
                     [{text: "7к", callback_data: "seventh"}],
                     [{text: "Манеж", callback_data: "ofp"}],
+                    [{text: "Выйти в меню", callback_data: "leave"}],
                 ]
             }
         })
@@ -282,6 +289,11 @@ class SceneGenerator {
 
         classroom.action('ofp', async (ctx) => {
             await getTimetableClassroom("0", 'Манеж', ctx);
+            await ctx.reply(text.getMenuText());
+            await ctx.scene.leave();
+        })
+
+        classroom.action('leave', async (ctx) => {
             await ctx.reply(text.getMenuText());
             await ctx.scene.leave();
         })
