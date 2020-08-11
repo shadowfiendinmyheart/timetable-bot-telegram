@@ -1,7 +1,7 @@
 class Query {
 
     getTeacherQuery() {
-        let query = "SELECT DISTINCT day.day_name, lesson.lesson_number, parity.parity_name, study_subject.study_subject_name, type_lesson.type_lesson_name, classroom.classroom_name FROM `timetable`, `day`, `parity`, `lesson`, `study_subject`, `type_lesson`, `classroom`WHERE day.id = day_id AND lesson.id = lesson_id AND study_subject.id = study_subject_id AND type_lesson.id = type_lesson_id AND classroom.id = classroom_id AND teacher_id = (SELECT teacher.id FROM `teacher` WHERE teacher.teacher_name = ?)";
+        let query = "SELECT DISTINCT day.day_name, lesson.lesson_number, parity.parity_name, study_subject.study_subject_name, type_lesson.type_lesson_name, classroom.classroom_name FROM `timetable`, `day`, `parity`, `lesson`, `study_subject`, `type_lesson`, `classroom`WHERE day.id = day_id AND lesson.id = lesson_id AND study_subject.id = study_subject_id AND type_lesson.id = type_lesson_id AND parity_id = parity.id AND classroom.id = classroom_id AND teacher_id = (SELECT teacher.id FROM `teacher` WHERE teacher.teacher_name = ?) ORDER BY day.id ASC, lesson.lesson_number ASC;";
         return query;
     }
 
@@ -70,8 +70,18 @@ class Query {
         return query;
     }
 
-    concatClassroomQuery (campus, classroom) {
+    getInstituteList() {
+        let query = "SELECT DISTINCT team_institute FROM `team` WHERE 1"
+        return query;
+    }
+
+    concatClassroomQuery(campus, classroom) {
         let query = "SELECT DISTINCT day.day_name, lesson.lesson_number, parity.parity_name, study_subject.study_subject_name, type_lesson.type_lesson_name, teacher.teacher_name FROM `timetable`, `day`, `lesson`, `parity`, `study_subject`, `type_lesson`, `teacher` WHERE day.id = day_id AND lesson.id = lesson_id AND study_subject.id = study_subject_id AND type_lesson.id = type_lesson_id AND parity.id = parity_id AND teacher.id = teacher_id AND classroom_id = (SELECT classroom.id FROM `classroom` WHERE classroom.classroom_campus = " + campus + " AND classroom.classroom_name LIKE " + "'%" + classroom + "%') ORDER BY day.id ASC, lesson.lesson_number ASC;"
+        return query;
+    }
+
+    concatTeacherQuery(teacher) {
+        let query = "SELECT teacher.teacher_name FROM `teacher` WHERE teacher.teacher_name LIKE '%" + teacher +"%'";
         return query;
     }
 

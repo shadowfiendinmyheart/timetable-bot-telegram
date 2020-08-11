@@ -4,12 +4,78 @@ const dataBase = require('./data/DataBase')
 const queryClass = require('./data/query')
 const textClass = require('./data/text')
 const logic = require('./data/Logic')
-const c = require('config')
 const query = new queryClass();
 const text = new textClass();
 
 var subscribeFlag = false;
+var enterTeacherFind = false;
 var findClassroom = '';
+var findTeacher = '';
+
+async function getSuka(teacher) {
+    teacher.on('text', async (ctx) => {
+        const answer = ctx.message.text;
+        console.log('+++++================================' + answer);
+        if (answer <= teachers.length && answer >= 0) {
+            var chooseTeacher = teachers[answer].teacher_name;
+            console.log('+++++++++++++++++++++' + chooseTeacher);
+            await ctx.reply('Расписание ' + chooseTeacher);
+            var showMessage = await dataBase.withOneAurguments(chooseTeacher, query.getTeacherQuery());
+            for (var i = 0; i < showMessage.length; i++) {
+            await ctx.reply("👀День недели: " + showMessage[i].day_name + 
+                        "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                        "\n🌐Чётность: " + showMessage[i].parity_name + 
+                        "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
+                        "\n🚪Кабинет: " + showMessage[i].classroom_name);
+            }
+            await ctx.reply(text.getQuitText())
+        } else {
+            ctx.reply("Ты ошибся, друх");
+        }
+    })
+}
+
+async function getTeacherTimetable(name, ctx) {
+    var teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(name));
+    if (teachers.length > 1) {
+        await ctx.reply('Выберите нужного преподавателя')
+        var teacherList = "";
+        for (var i = 0; i < teachers.length; i++) {
+                teacherList = teacherList + i + " - " + teachers[i].teacher_name + "\n";
+            }
+        await ctx.reply(teacherList)
+        teacher.on('text', async (ctx) => {
+            const answer = ctx.message.text;
+            console.log('+++++================================' + answer);
+            var chooseTeacher;
+            if (answer <= teachers.length && answer > -1) {
+                chooseTeacher = teachers[answer].teacher_name;
+                console.log('+++++++++++++++++++++' + chooseTeacher);
+                await ctx.reply('Расписание ' + chooseTeacher);
+                var showMessage = await dataBase.withOneAurguments(chooseTeacher, query.getTeacherQuery());
+                for (var i = 0; i < showMessage.length; i++) {
+                await ctx.reply("👀День недели: " + showMessage[i].day_name + 
+                            "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                            "\n🌐Чётность: " + showMessage[i].parity_name + 
+                            "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
+                            "\n🚪Кабинет: " + showMessage[i].classroom_name);
+                }
+                await ctx.reply(text.getQuitText())
+            } else {
+                ctx.reply("Ты ошибся, друх");
+            }
+        })
+    } else {
+        var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
+        for (var i = 0; i < showMessage.length; i++) {
+            await ctx.reply("👀День недели: " + showMessage[i].day_name + 
+                        "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                        "\n🌐Чётность: " + showMessage[i].parity_name + 
+                        "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
+                        "\n🚪Кабинет: " + showMessage[i].classroom_name);
+        }
+    }
+}
 
 async function getTimetableClassroom(campus, classroom, ctx) {
     if (classroom != "Манеж") {
@@ -47,12 +113,6 @@ async function getTimetableDay (group, day, ctx) {
 }
 
 class SceneGenerator {
-
-    GenCourseScene() {
-        const scene = new Scene('scene');
-        
-        return group;
-    }
 
     GenGroupScene() {
         const group = new Scene('group');
@@ -157,40 +217,32 @@ class SceneGenerator {
     GenTeacherScene() {
         const teacher = new Scene('teacher');
         teacher.enter(async (ctx) => {
-            await ctx.reply('Выбери ФИО преподавателя')
-            var teachers = await dataBase.withoutAurguments(query.getTeachers())
-            var teacherList = "";
-            for (var i = 0; i < teachers.length; i++) {
+            await ctx.reply('Введите фамилию преподавателя:');
+            teacher.on('text', async (ctx) => {
+                const answer = ctx.message.text;
+                //getTeacherTimetable(answer, ctx);
+                var teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(answer));
+    if (teachers.length > 1) {
+        await ctx.reply('Выберите нужного преподавателя')
+        var teacherList = "";
+        for (var i = 0; i < teachers.length; i++) {
                 teacherList = teacherList + i + " - " + teachers[i].teacher_name + "\n";
             }
-            await ctx.reply(teacherList)
+        await ctx.reply(teacherList)
+        await ctx.scene.leave();
+    } else {
+        var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
+        for (var i = 0; i < showMessage.length; i++) {
+            await ctx.reply("👀День недели: " + showMessage[i].day_name + 
+                        "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                        "\n🌐Чётность: " + showMessage[i].parity_name + 
+                        "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
+                        "\n🚪Кабинет: " + showMessage[i].classroom_name);
+        }
+    }
+            })
         })
-
-        teacher.on('text', async (ctx) => {
-            const answer = ctx.message.text;
-            var chooseTeacher;
-            var teachers = await dataBase.withoutAurguments(query.getTeachers())
-            if (answer == '/leave') {
-                await ctx.reply(text.getMenuText())
-                await ctx.scene.leave()
-            } else {
-                if (answer <= teachers.length && answer >= 0) {
-                    chooseTeacher = teachers[answer].teacher_name;
-                    await ctx.reply('Расписание ' + chooseTeacher)
-                    var showMessage = await dataBase.withOneAurguments(chooseTeacher, query.getTeacherQuery());
-                    for (var i = 0; i < showMessage.length; i++) {
-                    await ctx.reply("👀День недели: " + showMessage[i].day_name + 
-                                "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
-                                "\n🌐Чётность: " + showMessage[i].parity_name + 
-                                "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
-                                "\n🚪Кабинет: " + showMessage[i].classroom_name);
-                    }
-                    await ctx.reply(text.getQuitText())
-                } else {
-                    ctx.reply("Не понимаю тебя, если хочешь сбежать, просто напиши '/leave'")
-                }
-            }
-        })
+        
         return teacher
     }
 
