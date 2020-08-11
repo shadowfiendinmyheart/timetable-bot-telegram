@@ -10,7 +10,7 @@ const text = new textClass();
 var subscribeFlag = false;
 var enterTeacherFind = false;
 var findClassroom = '';
-var findTeacher = '';
+var teachersMassive;
 
 async function getSuka(teacher) {
     teacher.on('text', async (ctx) => {
@@ -222,25 +222,77 @@ class SceneGenerator {
                 const answer = ctx.message.text;
                 //getTeacherTimetable(answer, ctx);
                 var teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(answer));
-    if (teachers.length > 1) {
-        await ctx.reply('Выберите нужного преподавателя')
-        var teacherList = "";
-        for (var i = 0; i < teachers.length; i++) {
-                teacherList = teacherList + i + " - " + teachers[i].teacher_name + "\n";
-            }
-        await ctx.reply(teacherList)
-        await ctx.scene.leave();
-    } else {
-        var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
-        for (var i = 0; i < showMessage.length; i++) {
-            await ctx.reply("👀День недели: " + showMessage[i].day_name + 
-                        "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
-                        "\n🌐Чётность: " + showMessage[i].parity_name + 
-                        "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
-                        "\n🚪Кабинет: " + showMessage[i].classroom_name);
-        }
-    }
+                if (teachers.length > 1) {
+                    await ctx.reply('Выберите нужного преподавателя')
+                    var teacherList = "";
+                    for (var i = 0; i < teachers.length; i++) {
+                            teacherList = teacherList + i + " - " + teachers[i].teacher_name + "\n";
+                        }
+                    await ctx.reply(teacherList);
+                    //await ctx.scene.leave();
+                } else {
+                    var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
+                    test = showMessage;
+                    for (var i = 0; i < showMessage.length; i++) {
+                        await ctx.reply("👀День недели: " + showMessage[i].day_name + 
+                                    "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                                    "\n🌐Чётность: " + showMessage[i].parity_name + 
+                                    "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
+                                    "\n🚪Кабинет: " + showMessage[i].classroom_name);
+                    }
+                }
             })
+        })
+        
+        teacher.on('text', async (ctx) => {
+            const answer = ctx.message.text;
+            if (enterTeacherFind == true) {
+                if (answer <= teachersMassive.length && answer >= 0) {
+                    var chooseTeacher = teachersMassive[answer].teacher_name;
+                    await ctx.reply('Расписание ' + chooseTeacher);
+                    var showMessage = await dataBase.withOneAurguments(chooseTeacher, query.getTeacherQuery());
+                    for (var i = 0; i < showMessage.length; i++) {
+                    await ctx.reply("👀День недели: " + showMessage[i].day_name + 
+                                "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                                "\n🌐Чётность: " + showMessage[i].parity_name + 
+                                "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
+                                "\n🚪Кабинет: " + showMessage[i].classroom_name);
+                    }
+                    enterTeacherFind = false;
+                    await ctx.reply(text.getMenuText());
+                    await ctx.scene.leave();
+                } else {
+                    ctx.reply("Ты ошибся, друх");
+                    await ctx.reply(text.getMenuText());
+                    await ctx.scene.leave();
+                }
+            } else {
+                const answer = ctx.message.text;
+                var teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(answer));
+                teachersMassive = teachers;
+                if (teachers.length > 1) {
+                    enterTeacherFind = true;
+                    await ctx.reply('Выберите нужного преподавателя')
+                    var teacherList = "";
+                    for (var i = 0; i < teachers.length; i++) {
+                            teacherList = teacherList + i + " - " + teachers[i].teacher_name + "\n";
+                        }
+                    await ctx.reply(teacherList);
+                } else {
+                    var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
+                    for (var i = 0; i < showMessage.length; i++) {
+                        await ctx.reply("👀День недели: " + showMessage[i].day_name + 
+                                    "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
+                                    "\n🌐Чётность: " + showMessage[i].parity_name + 
+                                    "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
+                                    "\n🚪Кабинет: " + showMessage[i].classroom_name);
+                    }
+                    enterTeacherFind = false;
+                    await ctx.reply(text.getMenuText());
+                    await ctx.scene.leave();
+                }
+            }
+            
         })
         
         return teacher
