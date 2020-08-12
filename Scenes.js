@@ -15,6 +15,16 @@ var teachersMassive;
 var course;
 var institute;
 
+async function showGroups(ctx, course, institute) {
+    var group = await dataBase.withTwoAurguments(course, institute ,query.getGropus())
+    var groupList = ""
+    for (let i = 0; i < group.length; i++) {
+        groupList = groupList + i + " - " + group[i].team_name + "\n";
+    }
+    await ctx.reply(groupList);
+    return;
+}
+
 async function chooseCourse(ctx, group) {
     await ctx.telegram.sendMessage(ctx.chat.id, 'Выберите курс',
         {
@@ -34,6 +44,7 @@ async function chooseCourse(ctx, group) {
         course = '1';
         await ctx.reply(text.getGroupChooseText());
         groupChooseFlag = true;
+        showGroups(ctx, course, institute);
         return;
     })
 
@@ -41,6 +52,7 @@ async function chooseCourse(ctx, group) {
         course = '2';
         await ctx.reply(text.getGroupChooseText());
         groupChooseFlag = true;
+        showGroups(ctx, course, institute);
         return;
     })
 
@@ -48,6 +60,7 @@ async function chooseCourse(ctx, group) {
         course = '3';
         await ctx.reply(text.getGroupChooseText());
         groupChooseFlag = true;
+        showGroups(ctx, course, institute);
         return;
     })
 
@@ -55,6 +68,7 @@ async function chooseCourse(ctx, group) {
         course = '4';
         await ctx.reply(text.getGroupChooseText());
         groupChooseFlag = true;
+        showGroups(ctx, course, institute);
         return;
     })
 
@@ -62,6 +76,7 @@ async function chooseCourse(ctx, group) {
         course = '5';
         await ctx.reply(text.getGroupChooseText());
         groupChooseFlag = true;
+        showGroups(ctx, course, institute);
         return;
     })
 
@@ -69,6 +84,7 @@ async function chooseCourse(ctx, group) {
         course = '6';
         await ctx.reply(text.getGroupChooseText());
         groupChooseFlag = true;
+        showGroups(ctx, course, institute);
         return;
     })
 }
