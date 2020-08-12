@@ -8,9 +8,70 @@ const query = new queryClass();
 const text = new textClass();
 
 var subscribeFlag = false;
-var enterTeacherFind = false;
+var enterTeacherFindFlag = false;
+var groupChooseFlag = false;
 var findClassroom = '';
 var teachersMassive;
+var course;
+var institute;
+
+async function chooseCourse(ctx, group) {
+    await ctx.telegram.sendMessage(ctx.chat.id, 'Выберите курс',
+        {
+            reply_markup: {
+            inline_keyboard: [
+                [{text: "1 курс", callback_data: "first"}],
+                [{text: "2 курс", callback_data: "second"}],
+                [{text: "3 курс", callback_data: "third"}],
+                [{text: "4 курс", callback_data: "fourth"}],
+                [{text: "5 курс", callback_data: "fifth"}],
+                [{text: "6 курс", callback_data: "sixth"}],
+            ]
+        }
+        })
+
+    group.action('first', async (ctx) => {
+        course = '1';
+        await ctx.reply(text.getGroupChooseText());
+        groupChooseFlag = true;
+        return;
+    })
+
+    group.action('second', async (ctx) => {
+        course = '2';
+        await ctx.reply(text.getGroupChooseText());
+        groupChooseFlag = true;
+        return;
+    })
+
+    group.action('third', async (ctx) => {
+        course = '3';
+        await ctx.reply(text.getGroupChooseText());
+        groupChooseFlag = true;
+        return;
+    })
+
+    group.action('fourth', async (ctx) => {
+        course = '4';
+        await ctx.reply(text.getGroupChooseText());
+        groupChooseFlag = true;
+        return;
+    })
+
+    group.action('fifth', async (ctx) => {
+        course = '5';
+        await ctx.reply(text.getGroupChooseText());
+        groupChooseFlag = true;
+        return;
+    })
+
+    group.action('sixth', async (ctx) => {
+        course = '6';
+        await ctx.reply(text.getGroupChooseText());
+        groupChooseFlag = true;
+        return;
+    })
+}
 
 async function getTimetableClassroom(campus, classroom, ctx) {
     if (classroom != "Манеж") {
@@ -50,14 +111,93 @@ async function getTimetableDay (group, day, ctx) {
 class SceneGenerator {
 
     GenGroupScene() {
+        
         const group = new Scene('group');
         group.enter(async (ctx) => {
-            let group = await dataBase.withoutAurguments(query.getGropus())
-            var groupList = ""
-            for (let i = 0; i < group.length; i++) {
-                groupList = groupList + i + " - " + group[i].team_name + "\n";
+            await ctx.telegram.sendMessage(ctx.chat.id, 'Выберите институт',
+            {
+                reply_markup: {
+                inline_keyboard: [
+                    [{text: "ИМИТиФ", callback_data: "imitif"}, {text: "ИГЗ", callback_data: "igz"}],
+                    [{text: "ИЕН", callback_data: "ien"}, {text: "ИИиД", callback_data: "iiid"}],
+                    [{text: "ИИиС", callback_data: "iiis"}, {text: "ИНиГ", callback_data: "inig"}],
+                    [{text: "ИППСТ", callback_data: "ippst"}, {text: "ИПСУБ", callback_data: "ipsub"}],
+                    [{text: "ИСК", callback_data: "isk"}, {text: "ИУФФУиЖ", callback_data: "iuffuizh"}],
+                    [{text: "ИФКиС", callback_data: "ifkis"}, {text: "ИЭиУ", callback_data: "ieiu"}],
+                    [{text: "ИЯЛ", callback_data: "iyal"}, {text: "Выйти", callback_data: "leave"}],
+                ]
             }
-            await ctx.reply(groupList)
+            })
+        })
+
+        group.action('imitif', async (ctx) => {
+            institute = 'ИМИТиФ';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('igz', async (ctx) => {
+            institute = 'ИГЗ';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('ien', async (ctx) => {
+            institute = 'ИЕН';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('iiid', async (ctx) => {
+            institute = 'ИИиД';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('iiis', async (ctx) => {
+            institute = 'ИИиС';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('inig', async (ctx) => {
+            institute = 'ИНиГ';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('ippst', async (ctx) => {
+            institute = 'ИППСТ';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('ipsub', async (ctx) => {
+            institute = 'ИПСУБ';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('isk', async (ctx) => {
+            institute = 'ИСК';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('iuffuizh', async (ctx) => {
+            institute = 'ИУФФУиЖ';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('ifkis', async (ctx) => {
+            institute = 'ИФКиС';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('ieiu', async (ctx) => {
+            institute = 'ИЭиУ';
+            await chooseCourse(ctx, group);
+        })
+
+        group.action('iyal', async (ctx) => {
+            institute = 'ИЯЛ';
+            await chooseCourse(ctx, group);
+        })
+        
+        group.action('leave', async (ctx) => {
+            await ctx.reply(text.getMenuText())
+            await ctx.scene.leave()
         })
 
         group.command('leave', async (ctx) => {
@@ -66,17 +206,21 @@ class SceneGenerator {
         })
 
         group.on('text', async (ctx) => {
-            const answer = ctx.message.text;
-            var group = await dataBase.withoutAurguments(query.getGropus())
-            if (answer <= group.length && answer >= 0) {
-                let chooseGroup = group[answer].team_name;
-                logic.setGroup(ctx.message.from.username, chooseGroup);
-                await ctx.reply('Твоя группа - ' + chooseGroup)
-                await ctx.scene.leave()
-                await ctx.reply(text.getMenuText())
+            if (groupChooseFlag == true) {
+                const answer = ctx.message.text;
+                var group = await dataBase.withTwoAurguments(course, institute ,query.getGropus())
+                if (answer <= group.length && answer >= 0) {
+                    let chooseGroup = group[answer].team_name;
+                    logic.setGroup(ctx.message.from.username, chooseGroup);
+                    await ctx.reply('Твоя группа - ' + chooseGroup)
+                    await ctx.scene.leave()
+                    await ctx.reply(text.getMenuText())
+                } else {
+                    ctx.reply('Не понимаю тебя, если хочешь сбежать, просто напиши /leave')
+                }
             } else {
                 ctx.reply('Не понимаю тебя, если хочешь сбежать, просто напиши /leave')
-            }
+            }     
         })
         return group;
     }
@@ -181,7 +325,7 @@ class SceneGenerator {
         
         teacher.on('text', async (ctx) => {
             const answer = ctx.message.text;
-            if (enterTeacherFind == true) {
+            if (enterTeacherFindFlag == true) {
                 if (answer <= teachersMassive.length && answer >= 0) {
                     var chooseTeacher = teachersMassive[answer].teacher_name;
                     await ctx.reply('Расписание ' + chooseTeacher);
@@ -193,7 +337,7 @@ class SceneGenerator {
                                 "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
                                 "\n🚪Кабинет: " + showMessage[i].classroom_name);
                     }
-                    enterTeacherFind = false;
+                    enterTeacherFindFlag = false;
                     await ctx.reply(text.getMenuText());
                     await ctx.scene.leave();
                 } else {
@@ -206,7 +350,7 @@ class SceneGenerator {
                 var teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(answer));
                 teachersMassive = teachers;
                 if (teachers.length > 1) {
-                    enterTeacherFind = true;
+                    enterTeacherFindFlag = true;
                     await ctx.reply('Выберите нужного преподавателя')
                     var teacherList = "";
                     for (var i = 0; i < teachers.length; i++) {
@@ -215,7 +359,7 @@ class SceneGenerator {
                     await ctx.reply(teacherList);
                 } else {
                     if (teachers.length == 0) {
-                        enterTeacherFind = false;
+                        enterTeacherFindFlag = false;
                         await ctx.reply('Преподаватель с такой фамилией не найден');
                         await ctx.reply(text.getMenuText());
                         await ctx.scene.leave();
@@ -228,7 +372,7 @@ class SceneGenerator {
                                     "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
                                     "\n🚪Кабинет: " + showMessage[i].classroom_name);
                         }
-                        enterTeacherFind = false;
+                        enterTeacherFindFlag = false;
                         await ctx.reply(text.getMenuText());
                         await ctx.scene.leave();
                     }
@@ -264,7 +408,7 @@ class SceneGenerator {
                 ]
             }
             })
-            }) 
+            })
         })
 
         classroom.action('first', async (ctx) => {

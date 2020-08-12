@@ -26,7 +26,7 @@ class Query {
     }
 
     getGropus() {
-        let query = "SELECT team.team_name FROM `team` WHERE ?"
+        let query = "SELECT team.team_name FROM `team` WHERE team_course = ? AND team_institute = ?"
         return query;
     }
 

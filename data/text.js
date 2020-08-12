@@ -14,6 +14,16 @@ class Text {
         let text = "/week - Получить расписание на всю неделю\n/day - На определённый день\n/tomorrow - На завтра\n/leave - выйти в меню"
         return text;
     }
+
+    getGroupChooseText() {
+        let text = "Выберите свою группу:";
+        return text;
+    }
+
+    getGroupCourseText() {
+        let text = "Укажите свой курс:";
+        return text;
+    }
 }
 
 module.exports = Text

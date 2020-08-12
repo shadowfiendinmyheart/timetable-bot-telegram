@@ -39,13 +39,11 @@ bot.command('timetable', async (ctx) => {
   if (await logic.checkGroup(ctx.message.from.username) == true) {
     ctx.scene.enter('timetable')
   } else {
-    ctx.reply('Выбери свою группу:');
     ctx.scene.enter('group')
   }
 })
 
 bot.command('group', async (ctx) => {
-  ctx.reply('Выбери свою группу:');
   ctx.scene.enter('group')
 })
 
@@ -53,7 +51,6 @@ bot.command('subscribe', async (ctx) => {
   if (await logic.checkGroup(ctx.message.from.username) == true) {
     ctx.scene.enter('subscribe')
   } else {
-    ctx.reply('Выбери свою группу:');
     ctx.scene.enter('group')
   }
 })
