@@ -214,17 +214,25 @@ class SceneGenerator {
                         }
                     await ctx.reply(teacherList);
                 } else {
-                    var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
-                    for (var i = 0; i < showMessage.length; i++) {
+                    if (teachers.length == 0) {
+                        enterTeacherFind = false;
+                        await ctx.reply('Преподаватель с такой фамилией не найден');
+                        await ctx.reply(text.getMenuText());
+                        await ctx.scene.leave();
+                    } else {
+                        var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
+                        for (var i = 0; i < showMessage.length; i++) {
                         await ctx.reply("👀День недели: " + showMessage[i].day_name + 
                                     "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
                                     "\n🌐Чётность: " + showMessage[i].parity_name + 
                                     "\n📘Название предмета: " + showMessage[i].study_subject_name + "(" + showMessage[i].type_lesson_name + ")" + 
                                     "\n🚪Кабинет: " + showMessage[i].classroom_name);
+                        }
+                        enterTeacherFind = false;
+                        await ctx.reply(text.getMenuText());
+                        await ctx.scene.leave();
                     }
-                    enterTeacherFind = false;
-                    await ctx.reply(text.getMenuText());
-                    await ctx.scene.leave();
+                    
                 }
             }
             
