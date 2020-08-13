@@ -21,7 +21,13 @@ async function showGroups(ctx, course, institute) {
     for (let i = 0; i < group.length; i++) {
         groupList = groupList + i + " - " + group[i].team_name + "\n";
     }
-    await ctx.reply(groupList);
+    if (groupList.length == 0) {
+        await ctx.reply('Ни одной группы не было найдено :(');
+        await ctx.reply(text.getMenuText());
+        ctx.scene.leave();
+    } else {
+        await ctx.reply(groupList);
+    }
     return;
 }
 
@@ -232,10 +238,10 @@ class SceneGenerator {
                     await ctx.scene.leave()
                     await ctx.reply(text.getMenuText())
                 } else {
-                    ctx.reply('Не понимаю тебя, если хочешь сбежать, просто напиши /leave')
+                    ctx.reply(text.getLeaveText());
                 }
             } else {
-                ctx.reply('Не понимаю тебя, если хочешь сбежать, просто напиши /leave')
+                ctx.reply(text.getLeaveText());
             }     
         })
         return group;
@@ -264,20 +270,27 @@ class SceneGenerator {
                     try {
                         subscribeHour = await parseTime(answer).hour;
                         subscribeMinute = await parseTime(answer).minute;
-                        let time = subscribeHour + ':' + subscribeMinute;
-                        logic.setTimeUser(time, ctx.message.from.username);
-                        if (subscribeMinute < 10) {
-                            ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':0' + subscribeMinute);
+                        if (typeof subscribeHour == "undefined" || typeof subscribeMinute == "undefined") {
+                            await ctx.reply("Неверное время")
+                            await ctx.reply(text.getMenuText())
+                            await ctx.scene.leave();
                         } else {
-                            ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':' + subscribeMinute);
+                            let time = subscribeHour + ':' + subscribeMinute;
+                            logic.setTimeUser(time, ctx.message.from.username);
+                            if (subscribeMinute < 10) {
+                                ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':0' + subscribeMinute);
+                            } else {
+                                ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':' + subscribeMinute);
+                            }
+                            subscribeFlag = true;
+                            await checkTime(subscribeHour, subscribeMinute, ctx);
+                            await ctx.reply(text.getMenuText())
+                            await ctx.scene.leave();
                         }
-                        subscribeFlag = true;
-                        await checkTime(subscribeHour, subscribeMinute, ctx);
-                        await ctx.reply(text.getMenuText())
-                        await ctx.scene.leave();
                     } catch(e) {
                         console.log("WARNING: я поймал ошибку бро, вот она - " + e);
-                        await ctx.reply("Попробуй снова....")
+                        await ctx.reply("Попробуй снова...");
+                        ctx.reply(text.getLeaveText());
                     }
                 }  
             }
@@ -315,7 +328,6 @@ class SceneGenerator {
             await ctx.reply('Введите фамилию преподавателя:');
             teacher.on('text', async (ctx) => {
                 const answer = ctx.message.text;
-                //getTeacherTimetable(answer, ctx);
                 var teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(answer));
                 if (teachers.length > 1) {
                     await ctx.reply('Выберите нужного преподавателя')
@@ -324,7 +336,6 @@ class SceneGenerator {
                             teacherList = teacherList + i + " - " + teachers[i].teacher_name + "\n";
                         }
                     await ctx.reply(teacherList);
-                    //await ctx.scene.leave();
                 } else {
                     var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
                     test = showMessage;
@@ -576,8 +587,7 @@ class SceneGenerator {
         })
         
         timetable.on('text', async (ctx) => {
-            const answer = ctx.message.text;
-            ctx.reply('Не понимаю тебя, если хочешь сбежать, просто напиши /leave')
+            ctx.reply(text.getLeaveText());
         })
 
         return timetable;

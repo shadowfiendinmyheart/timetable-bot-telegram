@@ -24,6 +24,11 @@ class Text {
         let text = "Укажите свой курс:";
         return text;
     }
+
+    getLeaveText() {
+        let text = "Не понимаю тебя, если хочешь выйти, просто напиши - /leave";
+        return text;
+    }
 }
 
 module.exports = Text
