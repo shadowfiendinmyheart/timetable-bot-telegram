@@ -288,7 +288,7 @@ class SceneGenerator {
                             await ctx.scene.leave();
                         }
                     } catch(e) {
-                        console.log("WARNING: я поймал ошибку бро, вот она - " + e);
+                        console.log("Ошибка - " + e);
                         await ctx.reply("Попробуй снова...");
                         ctx.reply(text.getLeaveText());
                     }
