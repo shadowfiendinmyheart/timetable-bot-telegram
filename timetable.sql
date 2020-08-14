@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Авг 04 2020 г., 15:43
+-- Время создания: Авг 14 2020 г., 13:07
 -- Версия сервера: 10.3.13-MariaDB
 -- Версия PHP: 7.1.22
 
@@ -30,29 +30,30 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `classroom` (
   `id` int(11) NOT NULL,
-  `classroom_name` varchar(10) NOT NULL
+  `classroom_name` varchar(10) NOT NULL,
+  `classroom_campus` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `classroom`
 --
 
-INSERT INTO `classroom` (`id`, `classroom_name`) VALUES
-(1, '234/4к'),
-(2, '319/1к'),
-(3, '410а/6к'),
-(4, 'Манеж'),
-(5, '317/6к'),
-(6, '240/6к'),
-(7, '229/1к'),
-(8, '311/6к'),
-(9, '218/4к'),
-(10, '325/6к'),
-(11, '412/6к'),
-(12, '321/6к'),
-(13, '307/1к'),
-(14, '242/6к'),
-(15, '504/6к');
+INSERT INTO `classroom` (`id`, `classroom_name`, `classroom_campus`) VALUES
+(1, '234/4к', 4),
+(2, '319/1к', 1),
+(3, '410а/6к', 6),
+(4, 'Манеж', 0),
+(5, '317/6к', 6),
+(6, '240/6к', 6),
+(7, '229/1к', 1),
+(8, '311/6к', 6),
+(9, '218/4к', 4),
+(10, '325/6к', 6),
+(11, '412/6к', 6),
+(12, '321/6к', 6),
+(13, '307/1к', 1),
+(14, '242/6к', 6),
+(15, '504/6к', 6);
 
 -- --------------------------------------------------------
 
@@ -159,7 +160,7 @@ INSERT INTO `study_subject` (`id`, `study_subject_name`) VALUES
 
 CREATE TABLE `teacher` (
   `id` int(11) NOT NULL,
-  `teacher_name` varchar(30) NOT NULL
+  `teacher_name` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -178,7 +179,8 @@ INSERT INTO `teacher` (`id`, `teacher_name`) VALUES
 (9, 'Логов А.Г.'),
 (10, 'Ильина Т.А.'),
 (11, 'Трусов А.С.'),
-(12, 'Трофимов Н.И.');
+(12, 'Трофимов Н.И.'),
+(13, 'Трусов');
 
 -- --------------------------------------------------------
 
@@ -188,21 +190,21 @@ INSERT INTO `teacher` (`id`, `teacher_name`) VALUES
 
 CREATE TABLE `team` (
   `id` int(11) NOT NULL,
-  `team_name` varchar(10) NOT NULL,
-  `team_course` int(11) NOT NULL
+  `team_name` varchar(128) NOT NULL,
+  `team_course` int(11) NOT NULL,
+  `team_institute` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `team`
 --
 
-INSERT INTO `team` (`id`, `team_name`, `team_course`) VALUES
-(1, 'ПИ-21(д)', 2),
-(2, 'ПИ-21(э)', 2),
-(3, 'ПИ-21(ю)', 2),
-(4, 'ВМ-21', 2),
-(5, 'ИС-21', 2),
-(6, 'ИТ-21', 2);
+INSERT INTO `team` (`id`, `team_name`, `team_course`, `team_institute`) VALUES
+(1, 'ПИ-21(д)', 2, 'ИМИТиФ'),
+(2, 'ПИ-21(э)(1)', 2, 'ИМИТиФ'),
+(3, 'ПИ-21(ю)', 2, 'ИМИТиФ'),
+(4, 'ПИ-21(э)(2)', 2, 'ИМИТиФ'),
+(7, 'Клиническая психология\r\n', 2, 'ИППСТ');
 
 -- --------------------------------------------------------
 
@@ -211,7 +213,7 @@ INSERT INTO `team` (`id`, `team_name`, `team_course`) VALUES
 --
 
 CREATE TABLE `timetable` (
-  `id` int(11) NOT NULL,
+  `id` int(128) NOT NULL,
   `day_id` int(11) NOT NULL,
   `lesson_id` int(11) NOT NULL,
   `parity_id` int(11) NOT NULL,
@@ -256,7 +258,47 @@ INSERT INTO `timetable` (`id`, `day_id`, `lesson_id`, `parity_id`, `team_id`, `s
 (28, 5, 1, 3, 3, 4, 2, 4, 13),
 (29, 5, 2, 3, 3, 8, 1, 11, 12),
 (30, 5, 3, 3, 3, 10, 1, 6, 9),
-(31, 6, 2, 3, 3, 4, 1, 4, 1);
+(31, 6, 2, 3, 3, 4, 1, 4, 1),
+(32, 1, 1, 3, 2, 1, 1, 1, 1),
+(33, 1, 2, 1, 2, 2, 2, 2, 2),
+(34, 1, 2, 2, 2, 3, 2, 3, 2),
+(35, 1, 2, 2, 4, 3, 2, 3, 2),
+(36, 1, 2, 1, 4, 2, 2, 2, 2),
+(37, 1, 3, 2, 2, 2, 1, 2, 3),
+(38, 1, 3, 1, 4, 2, 1, 2, 3),
+(39, 2, 1, 3, 2, 4, 1, 4, 1),
+(40, 2, 1, 3, 4, 1, 1, 1, 15),
+(41, 2, 2, 3, 1, 5, 1, 5, 4),
+(42, 2, 2, 3, 2, 5, 1, 5, 4),
+(43, 2, 2, 3, 3, 5, 1, 5, 4),
+(44, 2, 2, 3, 4, 5, 1, 5, 4),
+(45, 3, 4, 3, 2, 6, 2, 8, 7),
+(46, 3, 4, 3, 4, 6, 2, 8, 7),
+(47, 3, 5, 1, 2, 6, 1, 9, 8),
+(48, 3, 5, 2, 2, 3, 3, 3, 5),
+(49, 3, 7, 3, 2, 6, 3, 9, 8),
+(50, 3, 5, 1, 4, 3, 3, 3, 5),
+(51, 3, 5, 2, 4, 6, 1, 9, 5),
+(52, 3, 6, 3, 4, 6, 3, 9, 8),
+(53, 4, 1, 3, 2, 11, 2, 10, 8),
+(54, 4, 1, 3, 4, 11, 2, 10, 8),
+(55, 4, 2, 3, 1, 5, 1, 5, 4),
+(56, 4, 2, 3, 2, 5, 1, 5, 4),
+(57, 4, 2, 3, 3, 5, 1, 5, 4),
+(61, 4, 2, 3, 4, 5, 1, 5, 4),
+(62, 4, 3, 3, 2, 7, 1, 7, 11),
+(63, 4, 3, 3, 4, 7, 1, 7, 11),
+(64, 5, 1, 3, 2, 4, 2, 4, 13),
+(65, 5, 1, 3, 4, 4, 2, 4, 13),
+(66, 5, 2, 3, 2, 11, 1, 10, 6),
+(67, 5, 2, 3, 4, 11, 1, 10, 6),
+(68, 5, 3, 3, 2, 8, 3, 8, 12),
+(69, 5, 3, 3, 4, 8, 3, 8, 12),
+(70, 5, 4, 3, 2, 8, 3, 8, 5),
+(71, 5, 4, 3, 4, 8, 3, 8, 5),
+(72, 6, 1, 1, 2, 1, 2, 1, 13),
+(73, 6, 1, 1, 4, 1, 2, 1, 13),
+(74, 6, 2, 1, 4, 4, 1, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -289,9 +331,7 @@ INSERT INTO `type_lesson` (`id`, `type_lesson_name`) VALUES
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `name` varchar(128) NOT NULL,
-  `course` tinyint(10) DEFAULT NULL,
-  `institute` varchar(10) DEFAULT NULL,
-  `group_name` varchar(10) DEFAULT NULL,
+  `group_name` varchar(128) DEFAULT NULL,
   `subscribe_time` time DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -299,8 +339,9 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `course`, `institute`, `group_name`, `subscribe_time`) VALUES
-(13, 'shadowfiend15yo', NULL, NULL, 'ПИ-21(д)', '17:09:00');
+INSERT INTO `users` (`id`, `name`, `group_name`, `subscribe_time`) VALUES
+(13, 'shadowfiend15yo', 'ПИ-21(д)', '24:59:00'),
+(18, 'katetyul', 'ПИ-21(д)', '18:00:00');
 
 --
 -- Индексы сохранённых таблиц
@@ -412,19 +453,19 @@ ALTER TABLE `study_subject`
 -- AUTO_INCREMENT для таблицы `teacher`
 --
 ALTER TABLE `teacher`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT для таблицы `team`
 --
 ALTER TABLE `team`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT для таблицы `timetable`
 --
 ALTER TABLE `timetable`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(128) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT для таблицы `type_lesson`
@@ -436,7 +477,7 @@ ALTER TABLE `type_lesson`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
