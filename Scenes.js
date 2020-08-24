@@ -250,7 +250,7 @@ class SceneGenerator {
     GenSubscribeScene() {
         const subscribe = new Scene('subscribe');
         subscribe.enter(async (ctx) => {
-            await ctx.reply('Выбери удобное время, чтобы получать расписание ежедневно.\nЧтобы отказаться от рассылки нажиите - /cancel')
+            await ctx.reply('Выберите удобное время, чтобы получать расписание ежедневно.\nЧтобы отказаться от рассылки нажиите - /cancel')
         })
 
         subscribe.on('text', async (ctx) => {
@@ -416,10 +416,10 @@ class SceneGenerator {
         const classroom = new Scene('classroom');
         
         classroom.enter(async (ctx) => {
-            await ctx.reply('Введи номер кабинета:');
+            await ctx.reply('Введите номер кабинета:');
             await classroom.on('text', async (ctx) => {
                 findClassroom = ctx.message.text;
-                await ctx.telegram.sendMessage(ctx.chat.id, 'Выбери корпус',
+                await ctx.telegram.sendMessage(ctx.chat.id, 'Выберите корпус',
             {
                 reply_markup: {
                 inline_keyboard: [
@@ -499,7 +499,7 @@ class SceneGenerator {
         var chooseGroup;
         timetable.enter(async (ctx) => {
             if (await logic.checkGroup(ctx.message.from.username) == false) {
-                await ctx.reply('Сначала выбери группу')
+                await ctx.reply('Сначала выберите группу')
                 await ctx.reply(text.getMenuText())
                 await ctx.scene.leave();    
             } else {
@@ -541,7 +541,7 @@ class SceneGenerator {
         })
 
         timetable.command('day', async (ctx) => {
-            await ctx.telegram.sendMessage(ctx.chat.id, 'Выбери день недели',
+            await ctx.telegram.sendMessage(ctx.chat.id, 'Выберите день недели',
             {
                 reply_markup: {
                 inline_keyboard: [

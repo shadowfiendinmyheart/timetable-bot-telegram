@@ -3,11 +3,16 @@
   "version": "2.0.0",
   "description": "telegram bot schedule for UDSU",
   "main": "node.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Tyulkin Ivan - @shadowfiendinmyheart",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shadowfiendinmyheart/timetable-bot-telegram"
+  },
   "dependencies": {
     "config": "^3.3.1",
     "mysql2": "^2.1.0",
