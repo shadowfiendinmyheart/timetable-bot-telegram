@@ -311,7 +311,11 @@ class SceneGenerator {
                             let group = await dataBase.withOneAurguments(ctx.message.from.username, query.getUserGroup())
                             let chooseGroup = group[0].group_name;
                             var today = todayDate.getDay();
-                            await getTimetableDay(chooseGroup, days[today], ctx);
+                            if (today == 0) {
+                                await ctx.reply('Relax, today is SUNDAY ! ! ! (FUCK YEAH)')
+                            } else {
+                                await getTimetableDay(chooseGroup, days[today], ctx);
+                            }
                         }
                         go();
                     }
