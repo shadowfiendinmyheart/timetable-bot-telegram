@@ -29,6 +29,58 @@ class Text {
         let text = "Не понимаю тебя, если хочешь выйти, просто напиши - /leave";
         return text;
     }
+
+    getGreetingSubscribeText() {
+        let text = "Выберите удобное время, чтобы получать расписание ежедневно.\nЧтобы отказаться от рассылки нажиите - /cancel";
+        return text;
+    }
+
+    getSubscribeTimeText() {
+        let text = "Каждый день вы будете получать расписание в это время - ";
+        return text;
+    }
+
+    getSubscribeWrongTimeText() {
+        let text = "Неверное время";
+        return text;
+    }
+
+    getTryAgainText() {
+        text = "Попробуй снова...";
+        return text;
+    }
+
+    getYourGroupText() {
+        text = "Твоя группа - ";
+        return text;
+    }
+
+    getItsSundayText() {
+        let text = "Relax, today is SUNDAY ! ! ! (FUCK YEAH)";
+        return text;
+    }
+
+    getChooseClassroomText() {
+        let text = "Введите номер кабинета:";
+        return text;
+    }
+
+    getChooseCampusText() {
+        let = "Выберите корпус";
+        return text;
+    }
+
+    getTomorrowIsSundayText() {
+        let text = "Расслабься, старичок, завтра выходной";
+        return text;
+    }
+
+    getChooseDayOfWeekText() {
+        let text = "Выберите день недели";
+        return text;
+    }
+
 }
 
 module.exports = Text
+

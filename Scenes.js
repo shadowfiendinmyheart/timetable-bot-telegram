@@ -30,7 +30,6 @@ async function showGroups(ctx, course, institute) {
     }
     return;
 }
-
 async function chooseCourse(ctx, group) {
     await ctx.telegram.sendMessage(ctx.chat.id, 'Выберите курс',
         {
@@ -94,7 +93,6 @@ async function chooseCourse(ctx, group) {
         return;
     })
 }
-
 async function getTimetableClassroom(campus, classroom, ctx) {
     if (classroom != "Манеж") {
         var classroomName = classroom + "/" + campus + "к";
@@ -117,7 +115,6 @@ async function getTimetableClassroom(campus, classroom, ctx) {
         findClassroom = '';
     }
 }
-
 async function getTimetableDay (group, day, ctx) {
     let showMessage = await dataBase.withTwoAurguments(group, day, query.getDailyTimetable());
     await ctx.reply('Расписание на ' + day + ":")
@@ -234,7 +231,7 @@ class SceneGenerator {
                 if (answer <= group.length && answer >= 0) {
                     let chooseGroup = group[answer].team_name;
                     logic.setGroup(ctx.message.from.username, chooseGroup);
-                    await ctx.reply('Твоя группа - ' + chooseGroup)
+                    await ctx.reply(text.getYourGroupText() + chooseGroup);
                     await ctx.scene.leave()
                     await ctx.reply(text.getMenuText())
                 } else {
@@ -246,11 +243,10 @@ class SceneGenerator {
         })
         return group;
     }
-
     GenSubscribeScene() {
         const subscribe = new Scene('subscribe');
         subscribe.enter(async (ctx) => {
-            await ctx.reply('Выберите удобное время, чтобы получать расписание ежедневно.\nЧтобы отказаться от рассылки нажиите - /cancel')
+            await ctx.reply(text.getGreetingSubscribeText())
         })
 
         subscribe.on('text', async (ctx) => {
@@ -271,16 +267,16 @@ class SceneGenerator {
                         subscribeHour = await parseTime(answer).hour;
                         subscribeMinute = await parseTime(answer).minute;
                         if (typeof subscribeHour == "undefined" || typeof subscribeMinute == "undefined") {
-                            await ctx.reply("Неверное время")
-                            await ctx.reply(text.getMenuText())
+                            await ctx.reply(text.getSubscribeWrongTimeText());
+                            await ctx.reply(text.getMenuText());
                             await ctx.scene.leave();
                         } else {
                             let time = subscribeHour + ':' + subscribeMinute;
                             logic.setTimeUser(time, ctx.message.from.username);
                             if (subscribeMinute < 10) {
-                                await ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':0' + subscribeMinute);
+                                await ctx.reply(text.getSubscribeTimeText() + subscribeHour + ':0' + subscribeMinute);
                             } else {
-                                await ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':' + subscribeMinute);
+                                await ctx.reply(text.getSubscribeTimeText() + subscribeHour + ':' + subscribeMinute);
                             }
                             subscribeFlag = true;
                             await checkTime(subscribeHour, subscribeMinute, ctx);
@@ -289,7 +285,7 @@ class SceneGenerator {
                         }
                     } catch(e) {
                         console.log("Ошибка - " + e);
-                        await ctx.reply("Попробуй снова...");
+                        await ctx.reply(text.getTryAgainText());
                         ctx.reply(text.getLeaveText());
                     }
                 }  
@@ -312,7 +308,7 @@ class SceneGenerator {
                             let chooseGroup = group[0].group_name;
                             var today = todayDate.getDay();
                             if (today == 0) {
-                                await ctx.reply('Relax, today is SUNDAY ! ! ! (FUCK YEAH)')
+                                await ctx.reply(text.getItsSundayText());
                             } else {
                                 await getTimetableDay(chooseGroup, days[today], ctx);
                             }
@@ -325,7 +321,6 @@ class SceneGenerator {
 
         return subscribe;
     }
-
     GenTeacherScene() {
         const teacher = new Scene('teacher');
         teacher.enter(async (ctx) => {
@@ -415,15 +410,14 @@ class SceneGenerator {
         
         return teacher
     }
-
     GenClassroomScene() {
         const classroom = new Scene('classroom');
         
         classroom.enter(async (ctx) => {
-            await ctx.reply('Введите номер кабинета:');
+            await ctx.reply(text.getChooseClassroomText());
             await classroom.on('text', async (ctx) => {
                 findClassroom = ctx.message.text;
-                await ctx.telegram.sendMessage(ctx.chat.id, 'Выберите корпус',
+                await ctx.telegram.sendMessage(ctx.chat.id, text.getChooseCampusText(),
             {
                 reply_markup: {
                 inline_keyboard: [
@@ -497,33 +491,32 @@ class SceneGenerator {
 
         return classroom;
     }
-
     GenTimetableScene() {
         const timetable = new Scene('timetable');
         var chooseGroup;
         timetable.enter(async (ctx) => {
             if (await logic.checkGroup(ctx.message.from.username) == false) {
-                await ctx.reply('Сначала выберите группу')
-                await ctx.reply(text.getMenuText())
+                await ctx.reply(text.getGroupChooseText());
+                await ctx.reply(text.getMenuText());
                 await ctx.scene.leave();    
             } else {
                 let group  = await dataBase.withOneAurguments(ctx.message.from.username, query.getUserGroup())
                 chooseGroup = group[0].group_name;
-                await ctx.reply('Твоя группа - ' + chooseGroup);
+                await ctx.reply(text.getYourGroupText() + chooseGroup);
                 await ctx.reply(text.getTimetableMenuText());
             }
         })
 
         timetable.command('leave', async (ctx) => {
-            await ctx.reply(text.getMenuText())
-            await ctx.scene.leave()
+            await ctx.reply(text.getMenuText());
+            await ctx.scene.leave();
         })
 
         timetable.command('tomorrow', async (ctx) => {
             var today = new Date().getDay()
             var days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
             if (days[today] === 'Суббота') {
-                await ctx.reply('Расслабься, старичок, завтра выходной')
+                await ctx.reply(text.getTomorrowIsSundayText());
             } else {
                 await getTimetableDay(chooseGroup, days[today + 1], ctx);
             }
@@ -545,7 +538,7 @@ class SceneGenerator {
         })
 
         timetable.command('day', async (ctx) => {
-            await ctx.telegram.sendMessage(ctx.chat.id, 'Выберите день недели',
+            await ctx.telegram.sendMessage(ctx.chat.id, text.getChooseDayOfWeekText(),
             {
                 reply_markup: {
                 inline_keyboard: [
@@ -596,7 +589,6 @@ class SceneGenerator {
 
         return timetable;
     }
-    
 }
 
 module.exports = SceneGenerator
