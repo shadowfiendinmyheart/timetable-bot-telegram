@@ -278,9 +278,9 @@ class SceneGenerator {
                             let time = subscribeHour + ':' + subscribeMinute;
                             logic.setTimeUser(time, ctx.message.from.username);
                             if (subscribeMinute < 10) {
-                                ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':0' + subscribeMinute);
+                                await ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':0' + subscribeMinute);
                             } else {
-                                ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':' + subscribeMinute);
+                                await ctx.reply('Каждый день вы будете получать расписание в это время - ' + subscribeHour + ':' + subscribeMinute);
                             }
                             subscribeFlag = true;
                             await checkTime(subscribeHour, subscribeMinute, ctx);
