@@ -51,7 +51,7 @@ class Text {
     }
 
     getYourGroupText() {
-        text = "Твоя группа - ";
+        let text = "Твоя группа - ";
         return text;
     }
 
@@ -66,7 +66,7 @@ class Text {
     }
 
     getChooseCampusText() {
-        let = "Выберите корпус";
+        let text = "Выберите корпус";
         return text;
     }
 

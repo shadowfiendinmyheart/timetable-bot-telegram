@@ -272,7 +272,7 @@ class SceneGenerator {
                             await ctx.scene.leave();
                         } else {
                             let time = subscribeHour + ':' + subscribeMinute;
-                            logic.setTimeUser(time, ctx.message.from.username);
+                            logic.setTimeUser(time);
                             if (subscribeMinute < 10) {
                                 await ctx.reply(text.getSubscribeTimeText() + subscribeHour + ':0' + subscribeMinute);
                             } else {
