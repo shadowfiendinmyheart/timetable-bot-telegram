@@ -70,6 +70,8 @@ class Text {
         return text;
     }
 
+
+
     getTomorrowIsSundayText() {
         let text = "Расслабься, старичок, завтра выходной";
         return text;
@@ -77,6 +79,16 @@ class Text {
 
     getChooseDayOfWeekText() {
         let text = "Выберите день недели";
+        return text;
+    }
+
+    getCantFindGroupText() {
+        let text = "Ни одной группы не было найдено :(";
+        return text;
+    }
+
+    getCantFindClassroom() {
+        let text = "Такого кабинета не существует";
         return text;
     }
 

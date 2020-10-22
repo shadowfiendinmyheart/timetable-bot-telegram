@@ -22,7 +22,7 @@ async function showGroups(ctx, course, institute) {
         groupList = groupList + i + " - " + group[i].team_name + "\n";
     }
     if (groupList.length == 0) {
-        await ctx.reply('Ни одной группы не было найдено :(');
+        await ctx.reply(text.getCantFindGroupText());
         await ctx.reply(text.getMenuText());
         ctx.scene.leave();
     } else {
@@ -31,7 +31,7 @@ async function showGroups(ctx, course, institute) {
     return;
 }
 async function chooseCourse(ctx, group) {
-    await ctx.telegram.sendMessage(ctx.chat.id, 'Выберите курс',
+    await ctx.telegram.sendMessage(ctx.chat.id, text.getGroupCourseText(),
         {
             reply_markup: {
             inline_keyboard: [
@@ -101,7 +101,7 @@ async function getTimetableClassroom(campus, classroom, ctx) {
     }
     let showMessage = await dataBase.withOneAurguments(campus, query.concatClassroomQuery(campus, classroom));
     if (showMessage.length == 0) {
-        await ctx.reply('Такого кабинета не существует');
+        await ctx.reply(tetx.getCantFindClassroom());
         findClassroom = '';
     } else {
         await ctx.reply('Расписание  ' + classroomName + " кабинета " + ":")
