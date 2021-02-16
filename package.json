@@ -16,6 +16,7 @@
   "dependencies": {
     "config": "^3.3.1",
     "mysql2": "^2.1.0",
+    "nodemon": "^2.0.7",
     "parse-loose-time": "^1.0.1",
     "telegraf": "^3.35.0"
   }

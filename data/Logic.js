@@ -27,7 +27,7 @@ setName = async (nameUser) => {
 }
 
 setTimeUser = async (time, nameUser) => {
-        await dataBase.withTwoAurguments(time, nameUser, query.setUserTime());
+    await dataBase.withTwoAurguments(time, nameUser, query.setUserTime());
 }
 
 setGroup = async(nameUser, group) => {

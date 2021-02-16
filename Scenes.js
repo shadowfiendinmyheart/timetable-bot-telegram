@@ -7,17 +7,17 @@ const logic = require('./data/Logic')
 const query = new queryClass();
 const text = new textClass();
 
-var subscribeFlag = false;
-var enterTeacherFindFlag = false;
-var groupChooseFlag = false;
-var findClassroom = '';
-var teachersMassive;
-var course;
-var institute;
+let subscribeFlag = false;
+let enterTeacherFindFlag = false;
+let groupChooseFlag = false;
+let findClassroom = '';
+let teachersMassive;
+let course;
+let institute;
 
 async function showGroups(ctx, course, institute) {
-    var group = await dataBase.withTwoAurguments(course, institute ,query.getGropus())
-    var groupList = ""
+    let group = await dataBase.withTwoAurguments(course, institute ,query.getGropus())
+    let groupList = ""
     for (let i = 0; i < group.length; i++) {
         groupList = groupList + i + " - " + group[i].team_name + "\n";
     }
@@ -94,18 +94,19 @@ async function chooseCourse(ctx, group) {
     })
 }
 async function getTimetableClassroom(campus, classroom, ctx) {
+    let classroomName;
     if (classroom != "Манеж") {
-        var classroomName = classroom + "/" + campus + "к";
+        classroomName = classroom + "/" + campus + "к";
     } else {
-        var classroomName = classroom;
+        classroomName = classroom;
     }
     let showMessage = await dataBase.withOneAurguments(campus, query.concatClassroomQuery(campus, classroom));
     if (showMessage.length == 0) {
-        await ctx.reply(tetx.getCantFindClassroom());
+        await ctx.reply(text.getCantFindClassroom());
         findClassroom = '';
     } else {
         await ctx.reply('Расписание  ' + classroomName + " кабинета " + ":")
-        for (var i = 0; i < showMessage.length; i++) {
+        for (let i = 0; i < showMessage.length; i++) {
             await ctx.reply("👀День недели: " + showMessage[i].day_name + 
                         "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
                         "\n🌐Чётность: " + showMessage[i].parity_name + 
@@ -227,7 +228,7 @@ class SceneGenerator {
         group.on('text', async (ctx) => {
             if (groupChooseFlag == true) {
                 const answer = ctx.message.text;
-                var group = await dataBase.withTwoAurguments(course, institute ,query.getGropus())
+                let group = await dataBase.withTwoAurguments(course, institute ,query.getGropus())
                 if (answer <= group.length && answer >= 0) {
                     let chooseGroup = group[answer].team_name;
                     logic.setGroup(ctx.message.from.username, chooseGroup);
@@ -251,8 +252,8 @@ class SceneGenerator {
 
         subscribe.on('text', async (ctx) => {
             const answer = ctx.message.text;
-            var subscribeHour = 0;
-            var subscribeMinute = 0;
+            let subscribeHour = 0;
+            let subscribeMinute = 0;
 
             if (answer == '/leave') {
                 await ctx.reply(text.getMenuText())
@@ -272,7 +273,7 @@ class SceneGenerator {
                             await ctx.scene.leave();
                         } else {
                             let time = subscribeHour + ':' + subscribeMinute;
-                            logic.setTimeUser(time);
+                            logic.setTimeUser(time, ctx.message.from.username);
                             if (subscribeMinute < 10) {
                                 await ctx.reply(text.getSubscribeTimeText() + subscribeHour + ':0' + subscribeMinute);
                             } else {
@@ -293,20 +294,20 @@ class SceneGenerator {
         })
 
         async function checkTime(subscribeHour, subscribeMinute, ctx) {
-            var checkerTime = setInterval(() => {
+            let checkerTime = setInterval(() => {
                 if (subscribeFlag == false) {
                     clearInterval(checkerTime);
                 } else {
-                    var todayDate = new Date();
-                    var hour = todayDate.getHours();
-                    var minute = todayDate.getMinutes();
-                    var days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
+                    let todayDate = new Date();
+                    let hour = todayDate.getHours();
+                    let minute = todayDate.getMinutes();
+                    let days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
                     console.log("request from " +  ctx.message.from.username + " - " + hour + ":" + minute);
                     if (subscribeHour == hour && subscribeMinute == minute) {
                         async function go() {
                             let group = await dataBase.withOneAurguments(ctx.message.from.username, query.getUserGroup())
                             let chooseGroup = group[0].group_name;
-                            var today = todayDate.getDay();
+                            let today = todayDate.getDay();
                             if (today == 0) {
                                 await ctx.reply(text.getItsSundayText());
                             } else {
@@ -327,18 +328,18 @@ class SceneGenerator {
             await ctx.reply('Введите фамилию преподавателя:');
             teacher.on('text', async (ctx) => {
                 const answer = ctx.message.text;
-                var teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(answer));
+                let teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(answer));
                 if (teachers.length > 1) {
                     await ctx.reply('Выберите нужного преподавателя')
-                    var teacherList = "";
-                    for (var i = 0; i < teachers.length; i++) {
+                    let teacherList = "";
+                    for (let i = 0; i < teachers.length; i++) {
                             teacherList = teacherList + i + " - " + teachers[i].teacher_name + "\n";
                         }
                     await ctx.reply(teacherList);
                 } else {
-                    var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
+                    let showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
                     test = showMessage;
-                    for (var i = 0; i < showMessage.length; i++) {
+                    for (let i = 0; i < showMessage.length; i++) {
                         await ctx.reply("👀День недели: " + showMessage[i].day_name + 
                                     "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
                                     "\n🌐Чётность: " + showMessage[i].parity_name + 
@@ -353,10 +354,10 @@ class SceneGenerator {
             const answer = ctx.message.text;
             if (enterTeacherFindFlag == true) {
                 if (answer <= teachersMassive.length && answer >= 0) {
-                    var chooseTeacher = teachersMassive[answer].teacher_name;
+                    let chooseTeacher = teachersMassive[answer].teacher_name;
                     await ctx.reply('Расписание ' + chooseTeacher);
-                    var showMessage = await dataBase.withOneAurguments(chooseTeacher, query.getTeacherQuery());
-                    for (var i = 0; i < showMessage.length; i++) {
+                    let showMessage = await dataBase.withOneAurguments(chooseTeacher, query.getTeacherQuery());
+                    for (let i = 0; i < showMessage.length; i++) {
                     await ctx.reply("👀День недели: " + showMessage[i].day_name + 
                                 "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
                                 "\n🌐Чётность: " + showMessage[i].parity_name + 
@@ -373,13 +374,13 @@ class SceneGenerator {
                 }
             } else {
                 const answer = ctx.message.text;
-                var teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(answer));
+                let teachers = await dataBase.withoutAurguments(query.concatTeacherQuery(answer));
                 teachersMassive = teachers;
                 if (teachers.length > 1) {
                     enterTeacherFindFlag = true;
                     await ctx.reply('Выберите нужного преподавателя')
-                    var teacherList = "";
-                    for (var i = 0; i < teachers.length; i++) {
+                    let teacherList = "";
+                    for (let i = 0; i < teachers.length; i++) {
                             teacherList = teacherList + i + " - " + teachers[i].teacher_name + "\n";
                         }
                     await ctx.reply(teacherList);
@@ -390,8 +391,8 @@ class SceneGenerator {
                         await ctx.reply(text.getMenuText());
                         await ctx.scene.leave();
                     } else {
-                        var showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
-                        for (var i = 0; i < showMessage.length; i++) {
+                        let showMessage = await dataBase.withOneAurguments(teachers[0].teacher_name, query.getTeacherQuery());
+                        for (let i = 0; i < showMessage.length; i++) {
                         await ctx.reply("👀День недели: " + showMessage[i].day_name + 
                                     "\n#️⃣ " + showMessage[i].lesson_number + " пара" + 
                                     "\n🌐Чётность: " + showMessage[i].parity_name + 
@@ -493,7 +494,7 @@ class SceneGenerator {
     }
     GenTimetableScene() {
         const timetable = new Scene('timetable');
-        var chooseGroup;
+        let chooseGroup;
         timetable.enter(async (ctx) => {
             if (await logic.checkGroup(ctx.message.from.username) == false) {
                 await ctx.reply(text.getGroupChooseText());
@@ -513,8 +514,8 @@ class SceneGenerator {
         })
 
         timetable.command('tomorrow', async (ctx) => {
-            var today = new Date().getDay()
-            var days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
+            let today = new Date().getDay()
+            let days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
             if (days[today] === 'Суббота') {
                 await ctx.reply(text.getTomorrowIsSundayText());
             } else {
@@ -525,8 +526,8 @@ class SceneGenerator {
 
         timetable.command('week', async (ctx) => {
             ctx.reply('Расписание на неделю: ')
-            var showMessage = await dataBase.withOneAurguments(chooseGroup, query.getTimetableQuery());
-            for (var i = 0; i < showMessage.length; i++) {
+            let showMessage = await dataBase.withOneAurguments(chooseGroup, query.getTimetableQuery());
+            for (let i = 0; i < showMessage.length; i++) {
                 await ctx.reply("👀День недели: " + showMessage[i].day_name + 
                                 "\n#️⃣ " + showMessage[i].lesson_number + " пара" +
                                 "\n🌐Чётность: " + showMessage[i].parity_name + 
